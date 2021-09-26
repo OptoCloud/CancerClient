@@ -12,7 +12,7 @@ namespace CancerClient.USpeak
 		[DllImport("USpeakNative.dll", CallingConvention = CallingConvention.Cdecl)]
 		private static extern bool Native_StreamMp3(IntPtr ptr, string path, Int32 length);
 		[DllImport("USpeakNative.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-		private static extern Int32 Native_GetAudioFrame(IntPtr ptr, byte[] data, Int32 dataLength, UInt32 actorNr, UInt32 packetTime);
+		private static extern Int32 Native_GetAudioFrame(IntPtr ptr, byte[] data, Int32 dataLength, Int32 actorNr, Int32 packetTime);
 		[DllImport("USpeakNative.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
 		private static extern Int32 Native_RecodeAudioFrame(IntPtr ptr, byte[] dataIn, Int32 dataInLength, byte[] dataOut, Int32 dataOutLength);
 
@@ -30,7 +30,7 @@ namespace CancerClient.USpeak
 			return Native_StreamMp3(m_thisPtr, path, path.Length);
 		}
 
-		public byte[] GetAudioFrame(UInt32 actorNr, UInt32 packetTime)
+		public byte[] GetAudioFrame(Int32 actorNr, Int32 packetTime)
 		{
 			lock (m_lock)
 			{

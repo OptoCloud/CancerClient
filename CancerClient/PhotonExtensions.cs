@@ -8,19 +8,9 @@ namespace CancerClient
 {
 	class PhotonExtensions
 	{
-		[StructLayout(LayoutKind.Explicit)]
-		struct Converter
+		public static Int32 GetServerTimeInMilliseconds()
 		{
-			[FieldOffset(0)]
-			public UInt32 UInt32Value;
-			[FieldOffset(0)]
-			public Int32 Int32Value;
-		}
-
-
-		public static UInt32 GetServerTimeInMilliseconds()
-		{
-			return new Converter { Int32Value = PhotonNetwork.field_Public_Static_LoadBalancingClient_0.prop_LoadBalancingPeer_0.ServerTimeInMilliSeconds }.UInt32Value;
+			return PhotonNetwork.field_Public_Static_LoadBalancingClient_0.prop_LoadBalancingPeer_0.ServerTimeInMilliSeconds;
 		}
 		public static void OpRaiseEvent(byte code, object customObject, RaiseEventOptions RaiseEventOptions, SendOptions sendOptions)
 		{

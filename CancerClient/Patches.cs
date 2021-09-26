@@ -31,7 +31,7 @@ namespace CancerClient
 			switch (param_1.Code)
 			{
 				case 1:
-					UInt32 serverTime = PhotonExtensions.GetServerTimeInMilliseconds();
+					Int32 serverTime = PhotonExtensions.GetServerTimeInMilliseconds();
 
 					Il2CppSystem.Object sendData;
 
@@ -70,17 +70,7 @@ namespace CancerClient
 					}
 					else if (CancerClient.VoiceRecodeEnabled)
 					{
-						byte[] incomingPacketData = (byte[])Serialization.FromIL2CPPToManaged<object>(param_1.CustomData);
-
-						byte[] recoded =  VoiceHelpers.RecodeAudioFrame(incomingPacketData);
-
-						if (recoded == null)
-						{
-							return;
-						}
-
-						sendData = Serialization.FromManagedToIL2CPP<Il2CppSystem.Object>(recoded);
-
+						VoiceHelpers.RecodeAudioFrame((byte[])Serialization.FromIL2CPPToManaged<object>(param_1.CustomData));
 						return;
 					}
 					else 

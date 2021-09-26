@@ -26,7 +26,7 @@ namespace CancerClient
 		{
 			return uspeakInstance.GetAudioFrame(11, PhotonExtensions.GetServerTimeInMilliseconds());
 		}
-		static public byte[] GetVoiceData(UInt32 actorNr, UInt32 serverTicks)
+		static public byte[] GetVoiceData(Int32 actorNr, Int32 serverTicks)
 		{
 			return uspeakInstance.GetAudioFrame(actorNr, serverTicks);
 		}
