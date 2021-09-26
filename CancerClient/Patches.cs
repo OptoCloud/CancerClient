@@ -3,7 +3,7 @@ using MelonLoader;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace CancerClient
 {
@@ -20,10 +20,45 @@ namespace CancerClient
 
 			var harmonyInstane = new HarmonyLib.Harmony("PhotonDebug");
 			harmonyInstane.Patch(typeof(Photon.Realtime.LoadBalancingClient).GetMethod("OnEvent", BindingFlags.Public | BindingFlags.Instance), GetPatch("OnEvent"));
+
+			senderThread = new Thread(AudioTransmitFunc);
+			senderThread.Start();
+		}
+
+		private static void AudioTransmitFunc()
+		{
+			while (true)
+			{
+				Thread.Sleep(20);
+
+				if (!CancerClient.VoiceMusicEnabled || !PlayerExtensions.IsInWorld())
+					continue;
+
+				var localPlayer = PlayerExtensions.LocalPlayer;
+				if (localPlayer == null)
+					continue;
+
+				var playerApi = localPlayer.GetVRCPlayerApi();
+				if (playerApi == null)
+					continue;
+
+				byte[] voiceData = VoiceHelpers.GetVoiceData(playerApi.playerId, PhotonExtensions.GetServerTimeInMilliseconds());
+
+				if (voiceData == null)
+					continue;
+
+				PhotonExtensions.OpRaiseEvent(1, voiceData, new Photon.Realtime.RaiseEventOptions()
+				{
+					field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache,
+					field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.Others,
+				},
+				SendOptions.SendUnreliable);
+			}
 		}
 
 		private static int xdi = 0;
 		private static byte[] xdpacket = null;
+		private static Thread senderThread;
 
 		[MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
 		private static void OnEvent(ExitGames.Client.Photon.EventData param_1)
@@ -47,18 +82,6 @@ namespace CancerClient
 
 						sendData = Serialization.FromManagedToIL2CPP<Il2CppSystem.Object>(xdpacket);
 					}
-					else if (CancerClient.VoiceMusicEnabled)
-					{
-						byte[] musicData = VoiceHelpers.GetVoiceData(11, serverTime);
-
-						if (musicData == null)
-						{
-							return;
-						}
-
-						sendData = Serialization.FromManagedToIL2CPP<Il2CppSystem.Object>(musicData);
-
-					}
 					else if (CancerClient.VoiceRepeatEnabled)
 					{
 						byte[] incomingPacketData = (byte[])Serialization.FromIL2CPPToManaged<object>(param_1.CustomData);
@@ -73,17 +96,17 @@ namespace CancerClient
 						VoiceHelpers.RecodeAudioFrame((byte[])Serialization.FromIL2CPPToManaged<object>(param_1.CustomData));
 						return;
 					}
-					else 
+					else
 					{
 						return;
 					}
 
 					PhotonExtensions.OpRaiseEvent(1, sendData, new Photon.Realtime.RaiseEventOptions()
 					{
-						field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.All,
-						field_Public_Byte_0 = 1,
-						field_Public_Byte_1 = 1,
-					}, SendOptions.SendUnreliable);
+						field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache,
+						field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.Others,
+					},
+					SendOptions.SendUnreliable);
 					break;
 				default:
 					//Console.WriteLine(param_1.Code);
