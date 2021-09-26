@@ -1,6 +1,7 @@
 ﻿using ExitGames.Client.Photon;
 using MelonLoader;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -49,8 +50,8 @@ namespace CancerClient
 
 				PhotonExtensions.OpRaiseEvent(1, voiceData, new Photon.Realtime.RaiseEventOptions()
 				{
-					field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache,
 					field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.Others,
+					field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache
 				},
 				SendOptions.SendUnreliable);
 			}
@@ -103,8 +104,8 @@ namespace CancerClient
 
 					PhotonExtensions.OpRaiseEvent(1, sendData, new Photon.Realtime.RaiseEventOptions()
 					{
-						field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache,
 						field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.Others,
+						field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache
 					},
 					SendOptions.SendUnreliable);
 					break;
