@@ -1,6 +1,4 @@
-﻿using ExitGames.Client.Photon;
-using Photon.Realtime;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CancerClient
