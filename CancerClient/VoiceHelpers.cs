@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MelonLoader;
+using System;
 using System.Threading.Tasks;
 
 namespace CancerClient
@@ -14,15 +15,11 @@ namespace CancerClient
 				{
 					uspeakInstance.StreamMp3(mp3file);
 				}
-				catch (System.Exception ex)
+				catch (Exception ex)
 				{
-					MelonLoader.MelonLogger.Msg($"Failed: {ex}");
+					MelonLogger.Msg($"Failed: {ex}");
 				}
 			});
-		}
-		static public byte[] GetVoiceData()
-		{
-			return uspeakInstance.GetAudioFrame(11, PhotonExtensions.GetServerTimeInMilliseconds());
 		}
 		static public byte[] GetVoiceData(Int32 actorNr, Int32 serverTicks)
 		{

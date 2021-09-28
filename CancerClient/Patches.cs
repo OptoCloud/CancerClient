@@ -35,7 +35,7 @@ namespace CancerClient
 
 					if (!CancerClient.VoiceMusicEnabled || !PlayerExtensions.IsInWorld())
 						continue;
-
+					
 					var localPlayer = PlayerExtensions.LocalPlayer;
 					if (localPlayer == null)
 						continue;
