@@ -1,9 +1,11 @@
 ﻿using ExitGames.Client.Photon;
 using MelonLoader;
 using System;
+using System.Collections;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using UnityEngine;
 
 namespace CancerClient
 {
@@ -21,21 +23,21 @@ namespace CancerClient
 			var harmonyInstane = new HarmonyLib.Harmony("PhotonDebug");
 			harmonyInstane.Patch(typeof(Photon.Realtime.LoadBalancingClient).GetMethod("OnEvent", BindingFlags.Public | BindingFlags.Instance), GetPatch("OnEvent"));
 
-			senderThread = new Thread(AudioTransmitFunc);
-			senderThread.Start();
+			MelonCoroutines.Start(AudioTransmitFunc());
 		}
 
-		private static void AudioTransmitFunc()
+		private static IEnumerator AudioTransmitFunc()
 		{
-			try
-			{
-				while (true)
-				{
-					Thread.Sleep(20);
 
+			while (true)
+			{
+				yield return new WaitForSeconds(0.01f);
+
+				try
+				{
 					if (!CancerClient.VoiceMusicEnabled || !PlayerExtensions.IsInWorld())
 						continue;
-					
+
 					var localPlayer = PlayerExtensions.LocalPlayer;
 					if (localPlayer == null)
 						continue;
@@ -46,7 +48,7 @@ namespace CancerClient
 
 					byte[] voiceData = VoiceHelpers.GetVoiceData(playerApi.playerId, PhotonExtensions.GetServerTimeInMilliseconds());
 
-					if (voiceData != null)
+					if (voiceData == null)
 						continue;
 
 					PhotonExtensions.OpRaiseEvent(1, voiceData, new Photon.Realtime.RaiseEventOptions()
@@ -56,10 +58,10 @@ namespace CancerClient
 					},
 					SendOptions.SendUnreliable);
 				}
-			}
-			catch (Exception ex)
-			{
-				MelonLogger.Error($"AudioTransmitThread: {ex}");
+				catch (Exception ex)
+				{
+					MelonLogger.Error($"AudioTransmitThread: {ex}");
+				}
 			}
 		}
 
