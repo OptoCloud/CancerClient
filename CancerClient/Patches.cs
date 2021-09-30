@@ -46,18 +46,15 @@ namespace CancerClient
 
 					byte[] voiceData = VoiceHelpers.GetVoiceData(playerApi.playerId, PhotonExtensions.GetServerTimeInMilliseconds());
 
-					if (voiceData == null)
+					if (voiceData != null)
 						continue;
 
-					Console.WriteLine("uSpeak: " + Convert.ToBase64String(voiceData));
-					/*
 					PhotonExtensions.OpRaiseEvent(1, voiceData, new Photon.Realtime.RaiseEventOptions()
 					{
 						field_Public_ReceiverGroup_0 = Photon.Realtime.ReceiverGroup.Others,
 						field_Public_EventCaching_0 = Photon.Realtime.EventCaching.DoNotCache
 					},
 					SendOptions.SendUnreliable);
-					*/
 				}
 			}
 			catch (Exception ex)
